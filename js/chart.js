@@ -1,0 +1,5 @@
+// Chart class
+
+class Chart {
+
+}

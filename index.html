@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sensor Analytics Intern Project</title>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:200,200i,400,400i,800,800i,900,900i" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/style.css"/>
+</head>
+<body>
+<h1>BUILDING A SENSOR ANALYTICS PIPELINE</h1>
+<p id='intro'>The increased availability of sensor data and technology creates a need for a robust analytics pipeline that can be utilized across a variety of applications. Using signal processing, machine learning, and data visualization techniques, we've built a pipeline that processes and classifies labeled sensor data. <br/> <br/> Viewing our pipeline as a black box, any kind of sensor data can be fed in and produce classification outputs. This summer, we've focused mainly on electroencephalogram (EEG) data, or brain electrical activity data. To collect EEG data, we used the Muse headband, a consumer-grade brain sensor wearable.<br/><br/></p>
+<svg id='animation'></svg>
+<div class="container">
+  <div id='graphic'>
+    <div id='sections'>
+      <section class="step">
+      </section>
+      <section class="step">
+        <div class="title">What's our pipeline look like?</div>
+        1. First, we collect our data using the Muse, which gets saved as a .csv file to Dropbox.<br/><br/>
+        2. Then, we clean our data using a variety of artifact removal and noise reduction techniques.<br/><br/>
+        3. Our cleaned data undergoes a variety of transformations, extracting features for our machine learning models in the process.<br/><br/>
+        4. We train and test these models to output a cognitive state classification.<br/><br/>
+        5. After getting results, we analyze model performance, going back and changing the pipeline as necessary.<br/><br/>
+        6. Once our models perform well enough, we can use the pipeline to control some sort of output device, such as a light.
+      </section>
+      <section class="step">
+        <div class="title">Here's some brain data.</div>
+        We collected data while thinking about happy memories, and then while computing the Fibonacci sequence. Can we use machine learning to distinguish between the two? <br/><br/>A portion of the raw data is shown on the right. The Muse headband consists of four electrodes (labeled TP9, AF7, AF8, and TP10) that line up along the scalp and record voltage fluctuations. <br/><br/>Select an option to see what the raw data looks like for each electrode.<br/><br/>
+        <select id = "dropdownElectrode"></select>
+      </section>
+      <section class="step">
+        <div class="title">First, let's clean our data.</div>
+        The Muse isn't perfect; it has a low signal-to-noise ratio and picks up artifacts (like blinking) that distort the pure EEG signal. We use a variety of artifact removal and noise reduction techniques to diminish the presence of eye movements, jaw clenching, and other environmental noise in the data. After the data is cleaned, the EEG signal looks much more prominent!
+      </section>
+      <section class="step">
+        <div class="title">To create discrete samples, we use time-series segmentation.</div>
+        To create inputs for our machine learning models, we must discretize time into these time segments. Each segment becomes a single input for our models. Here, we've divided the data into 1-second segments.
+      </section>
+      <section class="step">
+        <div class="title">Then, we extract several features from each discrete time segment.</div>
+        Let's represent each of these time segments as points, shown on the right. From each point, we extract a variety of features, such as the mean and variance for each electrode, as well as inter-electrode correlation. We end up getting 105 features in total, which is a lot! Not only will this slow down computation, but it might lead to overfitting and poorer classification results. Let's reduce the number of features down to two using primary component analysis (PCA).
+      </section>
+      <section class="step">
+        <div class="title">We can plot each point by these two features to visualize any differences between the classes.</div>
+        With PCA, we have a two-dimensional representation of the features in the data. Here, the blue points are "thinking about happy memories" while the red points are "computing the Fibonacci sequence". Our machine learning models will attempt to distinguish between these two. Ideally, we'd like to see the points of each class clearly clustering amongst themselves.
+      </section>
+      <section class="step">
+        <div class="title">Here's all of our discrete time segments.</div>
+        To make a classification, we're using a machine learning boosting method. That is, we've constructed a set of binary classification models (random forest, logistic regression, and neural network) that will each predict a data point's class. Then, each prediction will cast a (weighted) vote to make a classification: happy memories, or mental math.
+      </section>
+      <section class="step">
+        <div class="title">Finally, let's see how our boosting method classified our testing data!</div>
+        The highlighted points are data points that the machine learning models have erroneously classified, either a false positive or a false negative. Not too bad!
+      </section>
+      <section class="step">
+        <div class="title">How did we do?</div>
+        How do each of our models compare? We can plot the receiver operating characteristic, or ROC curve, which compares the false positive rate with the true positive rate at different discrimination thresholds. We can also look at a heat map of the confusion matrix, which shows how the models classified each data point. Ideally, we'd like to see darker colors in the top left and bottom right corners of the heat map, meaning that the model was able to correctly classify a majority of the data.<br/><br/>
+        <select id = "dropdownModel"></select>
+      </section>
+      <section class="step">
+        <div class="title">What next for the project?</div>
+        - Document code and interface in order to use our work after we leave<br/>
+        - Extend interface to be used with more general sensor data<br/>
+        - Optimize code for large quantities of off-line data<br/>
+        - Prepare live demo<br/>
+      </section>
+      <section class="step">
+        <div class="title">Trying it live!</div>
+        Let's put on the Muse headband and see if we can get an accurate live classification of turning a light on and off.
+      </section>
+    </div>
+    <div id='vis'>
+    </div>
+    <div id="extra-space">
+    </div>
+  </div>
+</div>
+<!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+<script src="js/d3.js"></script>
+<script src="js/scroller.js"></script>
+<script src="js/eeg_sections.js"></script>
+</body>
+</html>
